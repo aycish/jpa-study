@@ -1,7 +1,19 @@
-
-# .idea
-.idea/
-
 # .gradle
 .gradle/
 
+# java
+*.class
+
+# pacakages
+*.jar
+*.war
+*.ear
+
+#IntelliJ
+.idea
+.idea/*.xml
+*.iml
+out
+gen
+build
+rebel.xml
