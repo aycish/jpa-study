@@ -19,9 +19,7 @@ public class JpaMain {
         try {
             // Insert query
             if (type == 0) {
-                Member member = new Member();
-                member.setId(2L);
-                member.setName("UNHEE");
+                Member member = new Member(2L, "UNHEE");
                 em.persist(member);
             // Update
             } else if (type == 1) {
