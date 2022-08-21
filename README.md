@@ -14,4 +14,4 @@
 ### [목차]
 
 1. [hello JPA](https://github.com/aycish/jpa-study/tree/main/src/main/java/hello/hellojpa.md)
-2. 
+2. [영속성 관리](https://github.com/aycish/jpa-study/tree/main/src/main/java/persistence/persistenceContext.md)

@@ -12,7 +12,7 @@
 
 ### [엔티티의 생명 주기]
 
-![엔티티 생명주기](https://github.com/aycish/jpa-study/tree/main/src/main/resources/life_cycle_of_entity.png)
+![엔티티 생명주기](https://user-images.githubusercontent.com/88412661/185798330-c5a7aa26-fdb2-4e77-922f-1eb21741b77c.png)
 
 - 비영속 (new / transient)
     - 영속성 컨텍스트와 전혀 관계가 없는 새로운 상태
