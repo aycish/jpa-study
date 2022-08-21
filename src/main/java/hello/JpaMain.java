@@ -1,6 +1,6 @@
 package hello;
 
-import jdk.jshell.spi.ExecutionControlProvider;
+import entity.Member;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
