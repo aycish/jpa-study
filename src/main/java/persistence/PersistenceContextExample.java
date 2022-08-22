@@ -11,11 +11,11 @@ public class PersistenceContextExample {
 
     public static void main(String[] args) {
 
-        //persistContext();
-        //searchCache();
-        //lazyWrite();
-        //detectChanges();
-        //testFlush();
+        persistContext();
+        searchCache();
+        lazyWrite();
+        detectChanges();
+        testFlush();
         detachFromContext();
         emf.close();
     }

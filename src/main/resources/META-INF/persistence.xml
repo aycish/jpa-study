@@ -19,7 +19,24 @@
             <property name="hibernate.format_sql" value="true"/>
             <property name="hibernate.use_sql_comments" value="true"/>
             <property name="hibernate.jdbc.batch_size" value="10"/>
-            <!--<property name="hibernate.hbm2ddl.auto" value="create" />-->
+
+            <!-- ddl auto로 어플리케이션 실행 시점에 DDL을 어떤 방식으로 사용할지 결정 -->
+            <property name="hibernate.hbm2ddl.auto" value="create" />
+        </properties>
+    </persistence-unit>
+    <persistence-unit name="new-hello">
+        <class>entity.NewMember</class>
+        <properties>
+            <property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/>
+            <property name="javax.persistence.jdbc.user" value="sa"/>
+            <property name="javax.persistence.jdbc.password" value="a"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:h2:tcp://localhost/~/test"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
+
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/>
+            <property name="hibernate.use_sql_comments" value="true"/>
+            <property name="hibernate.hbm2ddl.auto" value="create" />
         </properties>
     </persistence-unit>
 </persistence>
