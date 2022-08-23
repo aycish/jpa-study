@@ -15,8 +15,9 @@ public class NewMemberTest {
 
         try {
             NewMember newMember = new NewMember();
-            newMember.setId(1L);
-            newMember.setUsername("A");
+            // @Id 어노테이션을 사용한 상태, 직접 ID를 할당하는 방법
+            //newMember.setId(1L);
+            newMember.setUsername("E");
 
             // DB에 순서가 저장된다.
             newMember.setRoleType(RoleType.USER);

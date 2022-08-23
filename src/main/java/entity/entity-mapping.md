@@ -136,3 +136,87 @@
 - 맵핑하는 필드 타입이 문자면 CLOB 맵핑, 나머지는 BLOB 맵핑
     - CLOB : String, char[], java.sql.CLOB
     - BLOB : byte[], java.sql.BLOB
+
+## 4. 기본 키 맵핑
+
+---
+
+### [기본 키 맵핑 어노테이션]
+
+- @Id
+- @GeneratedValue
+
+### [기본 키 맵핑 방법]
+
+- 직접할당하는 방법
+  - @Id만 사용
+- 자동으로 생성하는 방법
+  - IDENTITY
+  - SEQUENCE
+  - Table
+  - AUTO
+    - 방언에 따라 자동 지정
+    - H2 방언인 경우, Oracle과 동일하게 SEQUENCE로 동작
+
+### [자동 생성 전략 - IDENTITY]
+
+- @GeneratedValue(strategy = GenerationType.IDENTITY)로 지정
+- 기본 키 생성을 데이터베이스에 위임한다.
+- MySQL, PostgreSQL, SQL Server, DB2에서 사용 (예 : MySQL의 AUTO_INCREMENT)
+- JPA는 트랜잭션 커밋 시점에 INSERT SQL이 실행되는데, AUTO_INCREMENT는 데이터베이스에 INSERT SQL을 실행한 이후에 ID 값을 알 수 있다.
+  - 일단 NULL로 보낸다음에 DB에서 알아서해준다.
+  - JPA의 경우, PK값을 알고 있어야  영속성 컨텍스트에 등록하고, Update등을 수행할 수 있는데, 해당 전략을 사용하면 문제가 될 수 있다.
+  - 따라서 ID와 관련된 INSERT SQL을 쓰기 지연 SQL 저장소에 저장하는것이 아니라 **바로 Persist 호출 시점에 INSERT SQL을 실행시키며 JPA에 PK 값을 load한다.**
+
+### [자동 생성 전략 - SEQUENCE]
+
+- @GeneratedValue(strategy = GenerationType.SEQUENCE)로 지정
+- 오라클 DB에서 사용한다.
+- Sequence Object를 생성하여 값을 generating 하는 방법이다.
+  - 테이블마다 sequence를 관리하고 싶다면, sequenceGenerator의 멤버들을 설정하여 직접 설정하면 된다.
+  - 만약 테이블마다 설정하지 않는다면, 시퀀스는 공유하게 된다. 따라서 **서로 다른 table이어도 PK에 영향을 줄 수 있으므로 주의**.
+  - 따로 시퀀스 객체를 사용하지 않는다면, hibernate_sequence(initialValue = 1, allocationSize = 50) 시퀀스가 생성된다.
+- 지정할 수 있는 멤버
+  - name : 생성기 이름
+  - sequenceName : 데이터베이스에 등록되어 있는 시퀀스 이름 (default = hibernate_sequence)
+  - initialValue : DDL 생성시에만 사용되는 초기 값 (default = 1)
+  - allocationSize (increment value) : 시퀀스 한번 호출에 증가하는 수 (성능 최적화에 사용되며, 데이터베이스 시퀀스 값이 하나씩 증가하도록 설정되어 있으면, 이 값을 반드시 1로 설정해야한다.)
+  - catalog, schema : 데이터베이스 catalog, schema 이름
+- IDENTITY 전략과 동일하게 PK값은 DB에 접근해봐야 알 수 있다.
+  1. persist 시점에 DB에 SEQUENCE VALUE를 NEXT CALL 쿼리를 발행하여 값을 얻음.
+  2. member에 PK값을 설정한 뒤, 영속성 컨텍스트에 해당 PK값을 저장한다.
+- allocationSize로 네트워크 변경을 최소화하자
+  - DB에 미리 allocationSize만큼 값을 미리 증가시켜둔 뒤, 메모리에서 차근차근 값을 올린다.
+  - 이후 메모리의 값이 동일해지거나 커지는 경우, 다시 DB에 접근하여 allocationSize만큼 재증가 시킨다.
+  - 즉, sequence의 값 증가 횟수를 줄여 최소한으로 DB에 접근하도록 한다.
+  - 다만, web server가 down된 경우, sequence value가 초기화되므로 적절하게 allocationSize를 설정해야한다.
+
+### [자동 생성 전략 - TABLE]
+
+- 키 생성 전용 테이블을 하나 만들어서 데이터베이스 시퀀스를 흉내내는 전략
+- 모든 데이터베이스에 적용 가능
+- 왜 사용할까? → MYSQL에는 시퀀스가 없기 때문
+- Lock등 성능 이슈가 있을 수 있다.
+- 하기 쿼리가 발행된다.
+
+```sql
+create table {시퀀스 이름} (
+	  sequence_name varchar(255) not null,
+    next_val bigint,
+	  primary key (sequence_name)
+)
+```
+
+### [권장하는 식별자 전략]
+
+- 기본 키 제약 조건 : Not nullable, 유일, **변하면 안된다**.
+- 먼 미래까지 이 조건을 만족하는 자연키는 찾기 어렵기 때문에, 보통 대리키(대체키)를 사용한다.
+  - 주민등록 번호도 기본키로 적절하지 않다.
+- 권장 : Long형 + 대체키 + 키 생성전략을 사용하는것을 권장
+
+**주의**
+
+- **(GeneratedValue를 SEQUENCE로 설정한 경우)**
+  - spring-data-jpa의 2.5버전인 경우, sql script 실행 → 하이버네이트 초기화 순으로 실행된다. 그에 따라, hibernate sequence를 참조하지 못하는 에러가 발생할 수 있다.
+    - 방안 1) springframework boot의 버전을 낮춘다. → 구려보임
+    - 방안 2) spring.jpa.defer-datasource-initialization=true를 설정한다.
