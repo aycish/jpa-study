@@ -16,3 +16,4 @@
 1. [hello JPA](https://github.com/aycish/jpa-study/tree/main/src/main/java/hello/hellojpa.md)
 2. [영속성 관리](https://github.com/aycish/jpa-study/tree/main/src/main/java/persistence/persistenceContext.md)
 3. [엔티티 맵핑](https://github.com/aycish/jpa-study/tree/main/src/main/java/entity/entity-mapping.md)
+4. [연관관계 맵핑 기초]([엔티티 맵핑](https://github.com/aycish/jpa-study/tree/main/src/main/java/association/association.md))

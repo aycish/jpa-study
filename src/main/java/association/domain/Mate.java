@@ -25,4 +25,9 @@ public class Mate {
     @ManyToOne
     @JoinColumn(name = "TEAM_ID")
     private Team team;
+
+    public void changeTeam(Team team) {
+        this.team = team;
+        team.getMates().add(this);
+    }
 }
