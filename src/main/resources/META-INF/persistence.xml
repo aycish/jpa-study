@@ -60,6 +60,10 @@
     <persistence-unit name="association">
         <class>association.domain.Mate</class>
         <class>association.domain.Team</class>
+        <class>association.example.entity.Person</class>
+        <class>association.example.entity.Item</class>
+        <class>association.example.entity.order.OrderItem</class>
+        <class>association.example.entity.order.Orders</class>
         <properties>
             <property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/>
             <property name="javax.persistence.jdbc.user" value="sa"/>
